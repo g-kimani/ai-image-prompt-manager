@@ -1,0 +1,28 @@
+* {
+  box-sizing: border-box;
+}
+.promptContainer {
+  width: 300px;
+  height: 500px;
+  background-color: #333;
+  color: white;
+  position: absolute;
+  right: 30px;
+  display: flex;
+  flex-direction: column;
+}
+
+.promptDesigner {
+  display: flex;
+  flex-direction: column;
+}
+
+.hide {
+  display: none;
+}
+
+.prompt {
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem;
+}

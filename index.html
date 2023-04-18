@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Super Prompt test</title>
+    <link rel="stylesheet" href="./styles/style.css" />
+    <script src="./js/main.js" defer></script>
+</head>
+
+<body>
+    <div class="promptContainer">
+        <div class="controls">
+            <button id="targetPicker" class="btn" type="button">Choose target</button>
+            <button id="newPromptBtn" class="btn" type="button">New prompt</button>
+            <button id='savePromptBtn' class="btn hide" type="button">Save prompt</button>
+        </div>
+        <div class="promptDesigner hide">
+            <label>Title: <input type="text" name="prompt-title" /></label>
+            <label>Prompts: <textarea class="prompt-editor" placeholder="input prompts"></textarea></label>
+        </div>
+        <div class="savedPrompts">
+        </div>
+    </div>
+    <div class="textTarget">
+        <textarea placeholder="input"></textarea>
+    </div>
+</body>
+
+</html>

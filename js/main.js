@@ -6,13 +6,18 @@ class PromptManager {
     this.promptDesigner = document.querySelector(
       "body > div.promptContainer > div.promptDesigner"
     );
+    this.promptList = document.querySelector(
+      "body > div.promptContainer > div.savedPrompts"
+    );
     this.pickingTargetArea = false;
     this.bindButtons();
+    this.loadLocalStorage();
   }
   bindButtons() {
     this.targetPicker = document.getElementById("targetPicker");
     this.newPromptBtn = document.getElementById("newPromptBtn");
     this.savePromptBtn = document.getElementById("savePromptBtn");
+    this.clearPromptsBtn = document.getElementById("clearPromptsBtn");
 
     this.targetPicker.addEventListener("click", (event) =>
       this.startPickingTarget(event)
@@ -23,6 +28,34 @@ class PromptManager {
     this.savePromptBtn.addEventListener("click", (event) =>
       this.savePrompt(event)
     );
+    this.clearPromptsBtn.addEventListener("click", (event) => {
+      this.clearLocalStorage(event);
+    });
+  }
+  loadLocalStorage() {
+    for (let i = 0; i < localStorage.length; i++) {
+      const title = localStorage.key(i);
+      const prompts = localStorage.getItem(title);
+      this.superPrompts[title] = prompts;
+      this.createPromptDisplay({ title, prompts });
+    }
+  }
+  clearLocalStorage() {
+    localStorage.clear();
+    this.superPrompts = {};
+    this.updatePromptsList();
+  }
+  clearPromptsList() {
+    while (this.promptList.firstChild) {
+      this.promptList.removeChild(this.promptList.firstChild);
+    }
+  }
+  updatePromptsList() {
+    this.clearPromptsList();
+    Object.keys(this.superPrompts).forEach((title) => {
+      const prompts = this.superPrompts[title];
+      this.createPromptDisplay({ title, prompts });
+    });
   }
   startPickingTarget(event) {
     event.stopPropagation();
@@ -33,7 +66,7 @@ class PromptManager {
   chooseTarget(event) {
     if (this.pickingTargetArea) {
       this.targetTextField = event.target;
-      this.targetPicker.textContent = "Choosing target";
+      this.targetPicker.textContent = "Choose target";
       this.pickingTargetArea = false;
       document.removeEventListener("click", this.chooseTarget.bind(this));
     }
@@ -62,10 +95,12 @@ class PromptManager {
     this.savePromptBtn.classList.add("hide");
     // hide form
     this.promptDesigner.classList.add("hide");
+    console.log(localStorage);
   }
   addPrompt(prompt) {
     // TODO: Prompt validation
     this.superPrompts[prompt.title] = prompt.prompts;
+    localStorage.setItem(prompt.title, prompt.prompts);
     this.createPromptDisplay(prompt);
   }
   createPromptDisplay(prompt) {

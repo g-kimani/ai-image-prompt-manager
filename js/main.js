@@ -10,6 +10,7 @@ class PromptManager {
       "body > div.promptContainer > div.savedPrompts"
     );
     this.pickingTargetArea = false;
+    this.editingPrompt = false;
     this.bindButtons();
     this.loadLocalStorage();
   }
@@ -22,9 +23,10 @@ class PromptManager {
     this.targetPicker.addEventListener("click", (event) =>
       this.startPickingTarget(event)
     );
-    this.newPromptBtn.addEventListener("click", (event) =>
-      this.showPromptDesigner(event)
-    );
+    this.newPromptBtn.addEventListener("click", (event) => {
+      this.creatingPrompt = true;
+      this.showPromptDesigner(event);
+    });
     this.savePromptBtn.addEventListener("click", (event) =>
       this.savePrompt(event)
     );
@@ -73,7 +75,6 @@ class PromptManager {
   }
   showPromptDesigner(event) {
     event.stopPropagation();
-    this.creatingPrompt = true;
     this.savePromptBtn.classList.remove("hide");
     this.newPromptBtn.classList.add("hide");
     this.promptDesigner.classList.remove("hide");
@@ -90,7 +91,11 @@ class PromptManager {
     titleInput.value = "";
     promptsInput.value = "";
     // reset buttons
-    this.creatingPrompt = false;
+    if (this.editingPrompt) {
+      this.editingPrompt = false;
+    } else {
+      this.creatingPrompt = false;
+    }
     this.newPromptBtn.classList.remove("hide");
     this.savePromptBtn.classList.add("hide");
     // hide form
@@ -124,7 +129,35 @@ class PromptManager {
     });
     promptDiv.appendChild(pastePrompt);
 
+    const deletePrompt = document.createElement("button");
+    deletePrompt.textContent = "delete";
+    deletePrompt.addEventListener("click", (event) => {
+      this.deletePrompt(prompt);
+    });
+    promptDiv.appendChild(deletePrompt);
+
+    const editPrompt = document.createElement("button");
+    editPrompt.textContent = "edit";
+    editPrompt.addEventListener("click", (event) => {
+      this.editPrompt(event, prompt);
+    });
+    promptDiv.appendChild(editPrompt);
+
     display.appendChild(promptDiv);
+  }
+  editPrompt(event, prompt) {
+    const titleInput = this.promptDesigner.querySelector("input");
+    const promptsInput = this.promptDesigner.querySelector("textarea");
+    titleInput.value = prompt.title;
+    promptsInput.value = prompt.prompts;
+    this.editingPrompt = true;
+    this.deletePrompt(prompt);
+    this.showPromptDesigner(event);
+  }
+  deletePrompt(prompt) {
+    localStorage.removeItem(prompt.title);
+    delete this.superPrompts[prompt.title];
+    this.updatePromptsList();
   }
 }
 
